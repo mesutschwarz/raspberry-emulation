@@ -56,7 +56,7 @@ Before resize, you should eject/unmount bootfs image.
 
 ## Start qemu
 
-Now we're ready to launch qemu with RPi image
+Now we're ready to launch qemu with following command or using [launch.sh](https://github.com/mesutschwarz/raspberry-emulation/raw/main/launch.sh) file (Don't forget `chmod +x ./launch.sh` before run)
 
     qemu-system-aarch64  \
     -M raspi3b  \
