@@ -35,18 +35,21 @@ or extract from RPi image. In this case we're gonna use
 
 download this image https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2023-12-11/2023-12-11-raspios-bookworm-arm64-lite.img.xz
 and extract it (or just double click `2023-12-11-raspios-bookworm-arm64-lite.img.xz` file icon)
+
     xz -d ./2023-12-11-raspios-bookworm-arm64-lite.img.xz 
+    
 mount extracted image file (or just double click `2023-12-11-raspios-bookworm-arm64-lite.img` file icon)
+
     hdiutil mount ./2023-12-11-raspios-bookworm-arm64-lite.img
-`bootfs` is mounted to your Desktop (or `/Volumes/bootfs` folder)
-copy requires files from bootfs
+    
+`bootfs` is mounted to your Desktop (or `/Volumes/bootfs` folder) copy required files from bootfs
+
     cp /Volumes/bootfs/kernel8.img ./
     cp /Volumes/bootfs/bcm2710-rpi-3-b-plus.dtb ./
 
-## Resize image file
+### Resize image file
 
 Before resize, you should eject/unmount bootfs image.
-Resize image 
 
     qemu-img resize -f raw ./2023-12-11-raspios-bookworm-arm64-lite.img 8G
 
