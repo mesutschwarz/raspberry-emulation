@@ -22,8 +22,8 @@ we're gonna need some linux utils.
 ## Prepare required Kernel and DTB files
 qemu needs Raspberry Pi 3B kernel and device tree files. You can download that files from this repo
 
- - kernel8.img
- - bcm2710-rpi-3-b-plus.dtb
+ - [kernel8.img](https://github.com/mesutschwarz/raspberry-emulation/raw/main/kernel8.img)
+ - [bcm2710-rpi-3-b-plus.dtb](https://github.com/mesutschwarz/raspberry-emulation/raw/main/bcm2710-rpi-3-b-plus.dtb)
  
 or extract from RPi image. In this case we're gonna use  
  - **Raspberry Pi OS Lite**
