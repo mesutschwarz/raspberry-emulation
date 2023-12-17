@@ -12,8 +12,11 @@ Install **homebrew** with following command-line
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     
 and then install  **qemu**
+
     brew install qemu
+    
 we're gonna need some linux utils. 
+
     brew install util-linux
 
 ## Prepare required Kernel and DTB files
