@@ -26,12 +26,12 @@ qemu needs Raspberry Pi 3B kernel and device tree files. You can download that f
  - bcm2710-rpi-3-b-plus.dtb
  
 or extract from RPi image. In this case we're gonna use  
-- **Raspberry Pi OS Lite**
--  Release date:  December 11th 2023
--  System:  64-bit
--  Kernel version:  6.1
--  Debian version:  12 (bookworm)
--  Size:  433MB
+ - **Raspberry Pi OS Lite**
+ -  Release date:  December 11th 2023
+ -  System:  64-bit
+ -  Kernel version:  6.1
+ -  Debian version:  12 (bookworm)
+ -  Size:  433MB
 
 download this image https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2023-12-11/2023-12-11-raspios-bookworm-arm64-lite.img.xz
 and extract it (or just double click `2023-12-11-raspios-bookworm-arm64-lite.img.xz` file icon)
