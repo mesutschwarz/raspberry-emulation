@@ -12,12 +12,13 @@ fi
 
 echo "Image size will be set to: $IMG_SIZE"
 
-echo "Checking for qemu..."
+echo "Checking for qemu-img..."
 if ! command -v qemu-img &>/dev/null; then
-  echo "Warning: qemu-img not found. Please install QEMU before running this script."
+  echo "Error: qemu-img not found. Please install QEMU before running this script."
+  exit 1
 fi
 
-echo "Checking for util-linux (losetup, mount)..."
+echo "Checking for util-linux tools (losetup, mount)..."
 if ! command -v losetup &>/dev/null || ! command -v mount &>/dev/null; then
   echo "Warning: util-linux tools (losetup, mount) not found. Please install util-linux before running this script."
 fi
