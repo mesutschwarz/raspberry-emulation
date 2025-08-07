@@ -13,7 +13,13 @@ if [ ! -f "kernel8.img" ] || [ ! -f "bcm2710-rpi-3-b-plus.dtb" ]; then
   exit 1
 fi
 
-echo "Launching QEMU Raspberry Pi 3B emulation..."
+# Detect host CPU architecture
+ARCH=$(uname -m)
+if [[ "$ARCH" == "x86_64" ]]; then
+  echo "Warning: You are running ARM emulation on an x86_64 host. Performance may be lower than on ARM64 hosts."
+fi
+
+echo "Launching QEMU Raspberry Pi 3B emulation with qemu-system-aarch64..."
 
 qemu-system-aarch64 \
   -M raspi3b \
