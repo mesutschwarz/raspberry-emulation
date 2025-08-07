@@ -1,86 +1,84 @@
 # Raspberry Pi 3B Emulation on macOS
-This guide helps you to "How to emulate Raspberry 3B on macOS"
 
-# Requirements
- - homebrew
- - qemu
- - some boot files (kernel and dtb) for qemu
- - raspberry image
+This repository provides an automated way to emulate a Raspberry Pi 3B environment on your macOS computer using QEMU. It downloads the latest Raspberry Pi OS Lite image, extracts necessary boot files, and sets up a virtual SD card image for emulation.
 
-Install **homebrew** with following command-line
+## Features
+- Fully automated setup and launch scripts
+- Always fetches the latest official Raspberry Pi OS Lite image
+- Allows custom SD card image sizes (8G, 16G, 32G, 64G, 128G, 256G)
+- Extracts and prepares kernel and device tree files automatically
+- SSH access to the emulated Pi (if enabled in the guest OS)
+- Emulates USB keyboard, mouse, and network
 
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    
-and then install  **qemu**
+## How It Works
+The setup script (`install.sh`) downloads and prepares everything you need for emulation. The launch script (`launch.sh`) starts the virtual Raspberry Pi 3B using QEMU.
 
-    brew install qemu
-    
-we're gonna need some linux utils. 
+## Quick Start
 
-    brew install util-linux
+1. **Clone the repository:**
+    ```sh
+    git clone https://github.com/mesutschwarz/raspberry-emulation.git
+    cd raspberry-emulation
+    ```
 
-## Prepare required Kernel and DTB files
-qemu needs Raspberry Pi 3B kernel and device tree files. You can download that files from this repo
+2. **Make scripts executable:**
+    ```sh
+    chmod +x ./install.sh ./launch.sh
+    ```
 
- - [kernel8.img](https://github.com/mesutschwarz/raspberry-emulation/raw/main/kernel8.img)
- - [bcm2710-rpi-3-b-plus.dtb](https://github.com/mesutschwarz/raspberry-emulation/raw/main/bcm2710-rpi-3-b-plus.dtb)
- 
-or extract from RPi image. In this case we're gonna use  
- - **Raspberry Pi OS Lite**
- -  Release date:  May 13th 2025
- -  System:  64-bit
- -  Kernel version:  6.12
- -  Debian version:  12 (bookworm)
- -  Size:  433MB
+3. **Run the install script:**
+    ```sh
+    ./install.sh [IMAGE_SIZE]
+    ```
+    - `IMAGE_SIZE` is optional. Allowed values: `8G`, `16G`, `32G`, `64G`, `128G`, `256G`. Default is `8G`.
 
-download this image https://downloads.raspberrypi.com/raspios_lite_armhf/images/raspios_lite_armhf-2025-05-13/2025-05-13-raspios-bookworm-armhf-lite.img.xz
-and extract it (or just double click `2025-05-13-raspios-bookworm-armhf-lite.img.xz` file icon)
+    This will:
+    - Check for Homebrew, QEMU, and util-linux (and install if missing)
+    - Download the latest Raspberry Pi OS Lite image
+    - Extract and mount the image
+    - Copy required boot files
+    - Resize the SD card image
 
-    xz -d ./2025-05-13-raspios-bookworm-armhf-lite.img.xz 
-    
-mount extracted image file (or just double click `2023-12-11-raspios-bookworm-arm64-lite.img` file icon)
+4. **Launch the emulation:**
+    ```sh
+    ./launch.sh
+    ```
 
-    hdiutil mount ./2025-05-13-raspios-bookworm-armhf-lite.img.xz
-    
-Please note image /dev/diskX, it will be used in next steps.
+    This will start QEMU with the prepared image and boot files.
 
-`bootfs` is mounted to your Desktop (or `/Volumes/bootfs` folder) copy required files from bootfs
+## Virtual Machine Details
 
-    cp /Volumes/bootfs/kernel8.img ./
-    cp /Volumes/bootfs/bcm2710-rpi-3-b-plus.dtb ./
+- **Emulated Hardware:** Raspberry Pi 3B (ARM Cortex-A72, 1GB RAM, 4 cores)
+- **Boot Files:** Uses official kernel and device tree from the downloaded image
+- **Peripherals:** USB keyboard, mouse, and network are emulated
+- **Networking:** SSH port forwarding enabled (host port 5555 → guest port 22)
 
-Unmount RaspiOS image
+## Raspberry Pi 3B vs. QEMU VM
 
-    hdiutil detach /dev/diskX 
+- The emulation closely matches the real Pi 3B hardware, but performance may differ.
+- Some hardware features (e.g., GPIO, camera, WiFi) are not emulated.
+- Most standard Linux software for ARM will run as expected.
 
-### Resize image file
+## Advanced Usage
 
-Before resize, you should eject/unmount bootfs image.
+- **Custom Image Size:**  
+  Run `./install.sh 32G` to create a 32GB SD card image.
+- **Re-running Setup:**  
+  If you want to update or overwrite the image, simply rerun `install.sh`. The script will prompt before overwriting any existing files.
+- **SSH Access:**  
+  Enable SSH in the guest OS (`raspi-config`), then connect from your host:
+    ```sh
+    ssh pi@localhost -p 5555
+    ```
+- **Troubleshooting:**  
+  - If QEMU fails to launch, ensure all required files are present.
+  - If you want to use a different Raspberry Pi OS image, update the script or manually place the image in the directory.
 
-    qemu-img resize -f raw ./2025-05-13-raspios-bookworm-armhf-lite.img.xz 8G
+## Credits
 
+- Kernel and device tree files are extracted from official Raspberry Pi OS images.
+- QEMU is used for ARM emulation.
 
-## Start qemu
+## License
 
-Now we're ready to launch qemu with following command or using [launch.sh](https://github.com/mesutschwarz/raspberry-emulation/raw/main/launch.sh) file (Don't forget `chmod +x ./launch.sh` before run)
-
-qemu-system-aarch64 \
-  -M raspi3b \
-  -cpu cortex-a72 \
-  -m 1G \
-  -smp 4 \
-  -kernel ./kernel8.img \
-  -dtb ./bcm2710-rpi-3-b-plus.dtb \
-  -append "rw earlyprintk dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
-  -drive file=./2025-05-13-raspios-bookworm-armhf-lite.img,format=raw,if=sd \
-  -serial stdio \
-  -usb \
-  -device usb-mouse \
-  -device usb-kbd \
-  -device usb-net,netdev=net0 \
-  -netdev user,id=net0,hostfwd=tcp::5555-:22
-
-
-If you enable SSH in `raspi-config` you can connect your RPi image via ssh
-
-    ssh pi_username@localhost -p5555
+MIT License
