@@ -48,7 +48,7 @@ chmod +x install-mac.sh launch-mac.sh install-linux.sh launch-linux.sh
     - Install via your package manager, e.g.:
         ```sh
         sudo apt update
-        sudo apt install qemu qemu-utils util-linux wget xz-utils
+        sudo apt install qemu qemu-system qemu-utils util-linux wget xz-utils
         ```
 
 - Run the install script:
